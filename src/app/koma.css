@@ -1,0 +1,16 @@
+.koma {
+    --cell-width: calc(100% / 9);
+    --cell-height: calc(100% / 9);
+
+    position: absolute;
+    left: calc(var(--c) * var(--cell-width));
+    top: calc(var(--r) * var(--cell-height));
+    width: var(--cell-width);
+    height: var(--cell-height);
+    border-radius: 100%;
+    background: yellow;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: black;
+}

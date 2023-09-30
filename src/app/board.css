@@ -1,0 +1,19 @@
+.board {
+    width: 500px;
+    height: 500px;
+    display: flex;
+    border: 1px solid black;
+    background: orange;
+    position: relative;
+}
+
+.row {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.cell {
+    flex-grow: 1;
+    border: 1px solid black;
+}
