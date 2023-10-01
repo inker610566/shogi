@@ -10,20 +10,52 @@ import { ROW_NUM, COL_NUM } from "src/common/constant.ts";
 import { useState } from "react";
 import { useImmer } from "use-immer";
 
+const INITIAL_ROW1 = [
+  Type.LANCE,
+  Type.KNIGHT,
+  Type.SILVER_GENERAL,
+  Type.GOLD_GENERAL,
+  Type.KING,
+  Type.GOLD_GENERAL,
+  Type.SILVER_GENERAL,
+  Type.KNIGHT,
+  Type.LANCE,
+];
+
+function initialKomas(isFirst: bool): Koma[] {
+  const player1 = isFirst ? 0 : 1;
+  const player2 = 1 - player1;
+  const komas = [];
+  komas.push(
+    ...INITIAL_ROW1.map((t, c) => ({
+      type: t,
+      player: player2,
+      isLevelUp: false,
+      position: { r: 0, c },
+    })),
+  );
+  komas.push(
+    ...[1, COL_NUM - 2].map((c) => ({
+      type: c === 1 ? Type.ROOK : Type.BISHOP,
+      player: player2,
+      isLevelUp: false,
+      position: { r: 1, c },
+    })),
+  );
+  komas.push(
+    ...Array.from({length: COL_NUM}).map((_, c) => ({
+      type: Type.PAWN,
+      player: player2,
+      isLevelUp: false,
+      position: {r: 2, c},
+    })),
+  );
+  return komas;
+}
+
 export default function Board() {
   const [selectedKomaIdx, setSelectedKomaIdx] = useState<number>(-1);
-  const [allKomas, setAllKomas] = useImmer<Koma[]>([
-    //new KingKoma(0, { r: 3, c: 3 }),
-    {
-      type: Type.PAWN,
-      isLevelUp: false,
-      player: 0,
-      position: {
-        r: 3,
-        c: 1,
-      },
-    },
-  ]);
+  const [allKomas, setAllKomas] = useImmer<Koma[]>(initialKomas(true));
   const selectedKoma = allKomas[selectedKomaIdx];
   let nextMap: bool[][] | undefined = undefined;
   if (selectedKoma) {
