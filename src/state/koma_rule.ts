@@ -80,10 +80,38 @@ export const ROOK_KOMA_RULE: KomaRule = {
   },
 }
 
+const BISHOP_LEVELUP_DIFF_MOVE = diffMoveFromMap([
+  [T.E, T.D, T.E],
+  [T.D, T.S, T.D],
+  [T.E, T.D, T.E],
+]);
+
+export const BISHOP_KOMA_RULE: KomaRule = {
+  getLabel: (koma) => {
+    return koma.isLevelUp ? "龍馬" : "角行";
+  },
+  
+  getMovablePoints: ({isLevelUp, position}) => {
+      let levelupPoints = [];
+      if (isLevelUp) {
+          levelupPoints = [...diff_move_map.getMovablePoints(BISHOP_LEVELUP_DIFF_MOVE, position)];
+      }
+      
+      return [
+          ...genRayPoints(position, {r: -1, c: -1}),
+          ...genRayPoints(position, {r: -1, c: 1}),
+          ...genRayPoints(position, {r: 1, c: -1}),
+          ...genRayPoints(position, {r: 1, c: 1}),
+          ...levelupPoints,
+      ];
+  },
+}
+
 const KOMA_RULE_BY_TYPE = new Map<Type, KomaRule>(
     [
         [Type.KING, KING_KOMA_RULE],
         [Type.ROOK, ROOK_KOMA_RULE],
+        [Type.BISHOP, BISHOP_KOMA_RULE],
     ]
 );
 
