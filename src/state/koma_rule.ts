@@ -140,6 +140,23 @@ export const SLIVER_GENERAL_KOMA_RULE: KomaRule = {
   },
 }
 
+const KNIGHT_DIFF_MOVE = diffMoveFromMap([
+  [T.D, T.E, T.D],
+  [T.E, T.E, T.E],
+  [T.E, T.S, T.E],
+]);
+
+export const KNIGHT_KOMA_RULE: KomaRule = {
+  getLabel: (koma) => {
+    return koma.isLevelUp ? "成桂" : "桂馬";
+  },
+  
+  getMovablePoints: (koma) => {
+    const diffMap = koma.isLevelUp ? GOLD_GENERAL_DIFF_MOVE : KNIGHT_DIFF_MOVE;
+    return [...diff_move_map.getMovablePoints(diffMap, koma.position)];
+  },
+}
+
 const KOMA_RULE_BY_TYPE = new Map<Type, KomaRule>(
     [
         [Type.KING, KING_KOMA_RULE],
@@ -147,6 +164,7 @@ const KOMA_RULE_BY_TYPE = new Map<Type, KomaRule>(
         [Type.BISHOP, BISHOP_KOMA_RULE],
         [Type.GOLD_GENERAL, GOLD_GENERAL_KOMA_RULE],
         [Type.SILVER_GENERAL, SLIVER_GENERAL_KOMA_RULE],
+        [Type.KNIGHT, KNIGHT_KOMA_RULE],
     ]
 );
 

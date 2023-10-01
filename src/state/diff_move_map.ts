@@ -41,7 +41,6 @@ export function* getMovablePoints(
   point: Point,
 ): Iterable<Point[]> {
     for (const p of list) {
-        console.log('DEBUGG', JSON.stringify(p));
         const dest = {
             r: point.r + p.r,
             c: point.c + p.c,
