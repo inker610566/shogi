@@ -3,7 +3,7 @@
 import "./board.css";
 import KomaUi from "./koma.tsx";
 import { Koma, getKomaRule } from "src/state/koma_rule.ts";
-import { KingKoma } from "src/state/koma.ts";
+import { KingKoma, RookKoma} from "src/state/koma.ts";
 import { Point } from "src/common/type.ts";
 import { comparePoint } from "src/common/util.ts";
 import { ROW_NUM, COL_NUM } from "src/common/constant.ts";
@@ -13,7 +13,8 @@ import { useImmer } from "use-immer";
 export default function Board() {
   const [selectedKomaIdx, setSelectedKomaIdx] = useState<number>(-1);
   const [allKomas, setAllKomas] = useImmer<Koma[]>([
-    new KingKoma(0, { r: 3, c: 3 }),
+      //new KingKoma(0, { r: 3, c: 3 }),
+      new RookKoma(0, { r: 3, c: 3 }),
   ]);
   const selectedKoma = allKomas[selectedKomaIdx];
   let nextMap: bool[][] | undefined = undefined;
