@@ -107,11 +107,28 @@ export const BISHOP_KOMA_RULE: KomaRule = {
   },
 }
 
+const GOLD_GENERAL_DIFF_MOVE = diffMoveFromMap([
+  [T.D, T.D, T.D],
+  [T.D, T.S, T.D],
+  [T.E, T.D, T.E],
+]);
+
+export const GOLD_GENERAL_KOMA_RULE: KomaRule = {
+  getLabel: (koma) => {
+    return "金将";
+  },
+  
+  getMovablePoints: (koma) => {
+    return [...diff_move_map.getMovablePoints(GOLD_GENERAL_DIFF_MOVE, koma.position)];
+  },
+}
+
 const KOMA_RULE_BY_TYPE = new Map<Type, KomaRule>(
     [
         [Type.KING, KING_KOMA_RULE],
         [Type.ROOK, ROOK_KOMA_RULE],
         [Type.BISHOP, BISHOP_KOMA_RULE],
+        [Type.GOLD_GENERAL, GOLD_GENERAL_KOMA_RULE],
     ]
 );
 
