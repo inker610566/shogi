@@ -3,11 +3,12 @@
     --cell-height: calc(100% / 9);
 
     position: absolute;
-    left: calc(var(--c) * var(--cell-width));
-    top: calc(var(--r) * var(--cell-height));
-    width: var(--cell-width);
-    height: var(--cell-height);
-    border-radius: 100%;
+    left: calc((var(--c) + 0.5) * var(--cell-width));
+    top: calc((var(--r) + 0.5) * var(--cell-height));
+    transform: translate(-50%, -50%);
+    width: calc(var(--cell-width) - 10px);
+    border-radius: 50% 50% 0 0;
+    height: calc(var(--cell-height) - 10px);
     background: yellow;
     display: flex;
     justify-content: center;
@@ -19,3 +20,6 @@
     user-select: none;
 }
 
+.koma.p2 {
+    transform: translate(-50%, -50%) rotateX(180deg);
+}
