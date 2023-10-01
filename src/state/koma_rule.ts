@@ -157,6 +157,19 @@ export const KNIGHT_KOMA_RULE: KomaRule = {
   },
 }
 
+export const LANCE_KOMA_RULE: KomaRule = {
+  getLabel: (koma) => {
+    return koma.isLevelUp ? "成香" : "香車";
+  },
+  
+  getMovablePoints: (koma) => {
+    if (!koma.isLevelUp) {
+        return genRayPoints(koma.position, {r: -1, c: 0});
+    }
+    return [...diff_move_map.getMovablePoints(GOLD_GENERAL_DIFF_MOVE, koma.position)];
+  },
+}
+
 const KOMA_RULE_BY_TYPE = new Map<Type, KomaRule>(
     [
         [Type.KING, KING_KOMA_RULE],
@@ -165,6 +178,7 @@ const KOMA_RULE_BY_TYPE = new Map<Type, KomaRule>(
         [Type.GOLD_GENERAL, GOLD_GENERAL_KOMA_RULE],
         [Type.SILVER_GENERAL, SLIVER_GENERAL_KOMA_RULE],
         [Type.KNIGHT, KNIGHT_KOMA_RULE],
+        [Type.LANCE, LANCE_KOMA_RULE],
     ]
 );
 

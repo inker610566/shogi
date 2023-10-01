@@ -15,7 +15,7 @@ export default function Board() {
   const [allKomas, setAllKomas] = useImmer<Koma[]>([
     //new KingKoma(0, { r: 3, c: 3 }),
     {
-      type: Type.KNIGHT,
+      type: Type.LANCE,
       isLevelUp: false,
       player: 0,
       position: {
