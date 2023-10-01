@@ -1,6 +1,6 @@
-import { Point } from "./type.ts";
-import { castExists } from "./util.ts";
-import { ROW_NUM, COL_NUM } from "./constant.ts";
+import { Point } from "src/common/type.ts";
+import { castExists } from "src/common/util.ts";
+import { ROW_NUM, COL_NUM } from "src/common/constant.ts";
 
 export enum Token {
   EMPTY = "E",
@@ -28,7 +28,7 @@ export function diffMoveFromMap(mp: DiffMoveMap): DiffMoveList {
   const ret = [];
   for (let r = 0; r < mp.length; r++) {
     for (let c = 0; c < mp[r].length; c++) {
-      if (source === Token.D) {
+      if (mp[r][c] === Token.D) {
         ret.push({ r: r - source.r, c: c - source.c });
       }
     }
@@ -41,12 +41,13 @@ export function* getMovablePoints(
   point: Point,
 ): Iterable<Point[]> {
     for (const p of list) {
+        console.log('DEBUGG', JSON.stringify(p));
         const dest = {
             r: point.r + p.r,
             c: point.c + p.c,
         };
         if (0 <= dest.r && dest.r < ROW_NUM &&
             0 <= dest.c && dest.c < COL_NUM)
-            return dest;
+            yield dest;
     }
 }

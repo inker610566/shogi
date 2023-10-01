@@ -13,4 +13,9 @@
     justify-content: center;
     align-items: center;
     color: black;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
+

@@ -1,10 +1,18 @@
 import "./koma.css";
-import { Koma as KomaProps } from "@/src/state/koma.ts";
+import { Koma as KomaProps, getKomaRule } from "src/state/koma_rule.ts";
 
-export default function Koma(koma: KomaProps) {
+export default function Koma({ koma, onClick }: { koma: KomaProps }) {
+  const rule = getKomaRule(koma);
   return (
-    <div className="koma" style={{ "--r": koma.r, "--c": koma.c }}>
-      {koma.getLabel()}
+    <div
+      className="koma"
+      onClick={onClick}
+      style={{
+        "--r": koma.position.r,
+        "--c": koma.position.c,
+      }}
+    >
+      {rule.getLabel(koma)}
     </div>
   );
 }

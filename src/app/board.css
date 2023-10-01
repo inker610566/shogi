@@ -1,19 +1,27 @@
 .board {
-    width: 500px;
-    height: 500px;
-    display: flex;
-    border: 1px solid black;
-    background: orange;
-    position: relative;
+  width: 500px;
+  height: 500px;
+  display: flex;
+  border: 1px solid black;
+  position: relative;
 }
 
 .row {
-    display: flex;
-    flex-direction: column;
-    flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
 }
 
 .cell {
-    flex-grow: 1;
-    border: 1px solid black;
+  flex-grow: 1;
+  background: orange;
+  border: 1px solid black;
+}
+
+.board.select-koma .cell:not(.next) {
+  filter: brightness(0.7);
+}
+
+.board.select-koma .cell.next {
+  cursor: pointer;
 }
