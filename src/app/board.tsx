@@ -26,30 +26,38 @@ function initialKomas(isFirst: bool): Koma[] {
   const player1 = isFirst ? 0 : 1;
   const player2 = 1 - player1;
   const komas = [];
-  komas.push(
-    ...INITIAL_ROW1.map((t, c) => ({
-      type: t,
-      player: player2,
-      isLevelUp: false,
-      position: { r: 0, c },
-    })),
-  );
-  komas.push(
-    ...[1, COL_NUM - 2].map((c) => ({
-      type: c === 1 ? Type.ROOK : Type.BISHOP,
-      player: player2,
-      isLevelUp: false,
-      position: { r: 1, c },
-    })),
-  );
-  komas.push(
-    ...Array.from({length: COL_NUM}).map((_, c) => ({
-      type: Type.PAWN,
-      player: player2,
-      isLevelUp: false,
-      position: {r: 2, c},
-    })),
-  );
+  for(const player of [player2, player1]) {
+      function transpose(p: Point) {
+          if (player === player2) {
+              return p;
+          }
+          return {c: p.c, r: ROW_NUM - 1 - p.r};
+      }
+      komas.push(
+        ...INITIAL_ROW1.map((t, c) => ({
+          type: t,
+          player,
+          isLevelUp: false,
+          position: transpose({ r: 0, c }),
+        })),
+      );
+      komas.push(
+        ...[1, COL_NUM - 2].map((c) => ({
+          type: c === 1 ^ (player === player1) ? Type.ROOK : Type.BISHOP,
+          player,
+          isLevelUp: false,
+          position: transpose({ r: 1, c }),
+        })),
+      );
+      komas.push(
+        ...Array.from({length: COL_NUM}).map((_, c) => ({
+          type: Type.PAWN,
+          player,
+          isLevelUp: false,
+          position: transpose({r: 2, c}),
+        })),
+      );
+  }
   return komas;
 }
 
