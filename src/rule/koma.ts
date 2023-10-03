@@ -1,25 +1,8 @@
-import { Point } from "./type.ts";
+import { Koma } from "./type.ts";
+import { Point } from "src/common/type.ts";
 import { Token as T, diffMoveFromMap } from "./diff_move_map.ts";
 import {inBoard} from "/src/common/util.ts";
 import * as diff_move_map from "./diff_move_map.ts";
-
-export enum Type {
-  KING = "王",
-  ROOK = "飛",
-  BISHOP = "角",
-  GOLD_GENERAL = "金",
-  SILVER_GENERAL = "銀",
-  KNIGHT = "桂",
-  LANCE = "香",
-  PAWN = "歩",
-}
-
-export interface Koma {
-  readonly type: Type;
-  readonly player: number;
-  isLevelUp: bool;
-  position: Point;
-}
 
 export interface KomaRule {
   getLabel(koma: Koma): string;
