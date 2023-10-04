@@ -31,6 +31,7 @@ export default function Board() {
       return;
     }
     if (!comparePoint(selectedKomaPos, pos)) {
+      setSelectedKomaPos(undefined);
       return;
     }
     const koma = boardRule.current.getKoma(pos);
@@ -53,6 +54,10 @@ export default function Board() {
   const nextMap = selectedKomaPos
     ? boardRule.current.getNextMap({ position: selectedKomaPos })
     : undefined;
+  if (selectedKomaPos) {
+      // For click self cancel move.
+      nextMap[selectedKomaPos.r][selectedKomaPos.c] = true;
+  }
 
   return (
     <div
