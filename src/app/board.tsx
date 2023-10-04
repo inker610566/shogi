@@ -75,7 +75,11 @@ export default function Board() {
         </div>
       ))}
       {[...boardRule.current.getKomaList()].map((k, idx) => (
-        <KomaUi koma={k} key={`${k.position.r}_${k.position.c}`} />
+        <KomaUi
+          koma={k}
+          key={`${k.position.r}_${k.position.c}`}
+          onClick={() => void onClickCell(k.position)}
+        />
       ))}
     </div>
   );
