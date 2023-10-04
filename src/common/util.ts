@@ -9,6 +9,12 @@ export function castExists<T>(value: T|undefined): T {
     return value;
 }
 
+export function assert(value: boolean, assertMessage: string): T {
+    if (!value) {
+        throw new Error(`Assertion failed: ${assertMessage}`);
+    }
+}
+
 export function comparePoint(p: Point, p2: Point): number {
     if (p.r !== p2.r) {
         return Math.sign(p.r - p2.r);

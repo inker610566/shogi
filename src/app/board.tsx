@@ -23,7 +23,7 @@ export default function Board() {
 
   function onClickCell(pos: Point) {
     if (selectedKomaPos === undefined) {
-      const koma = boardRule.current.getKoma(pos);
+      const koma = boardRule.current.board.getKoma(pos);
       if (koma) {
         // TODO: Check player.
         setSelectedKomaPos(pos);
@@ -34,7 +34,7 @@ export default function Board() {
       setSelectedKomaPos(undefined);
       return;
     }
-    const koma = boardRule.current.getKoma(pos);
+    const koma = boardRule.current.board.getKoma(pos);
     if (koma) {
       return;
     }
@@ -55,8 +55,8 @@ export default function Board() {
     ? boardRule.current.getNextMap({ position: selectedKomaPos })
     : undefined;
   if (selectedKomaPos) {
-      // For click self cancel move.
-      nextMap[selectedKomaPos.r][selectedKomaPos.c] = true;
+    // For click self cancel move.
+    nextMap[selectedKomaPos.r][selectedKomaPos.c] = true;
   }
 
   return (
@@ -79,7 +79,7 @@ export default function Board() {
           ))}
         </div>
       ))}
-      {[...boardRule.current.getKomaList()].map((k, idx) => (
+      {[...boardRule.current.board.iterKomas()].map((k, idx) => (
         <KomaUi
           koma={k}
           key={`${k.position.r}_${k.position.c}`}
