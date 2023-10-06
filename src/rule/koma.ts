@@ -185,7 +185,8 @@ export const PAWN_KOMA_RULE: KomaRule = {
   getMovablePoints: (koma, board) => {
     const { isLevelUp, position } = koma;
     if (!isLevelUp) {
-      return [{ r: position.r - 1, c: position.c }];
+      const rDiff = koma.player === 1 ? 1 : -1;
+      return [{ r: position.r + rDiff, c: position.c }];
     }
     return [
       ...diff_move_map.getMovablePoints(GOLD_GENERAL_DIFF_MOVE, board, koma),
