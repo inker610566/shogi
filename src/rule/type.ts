@@ -46,6 +46,12 @@ export class Board {
     Object.assign(koma.position, pos);
   }
 
+  removeKoma(koma: Koma) {
+    assert(this.komas.has(koma), "Call removeKoma() with owned koma");
+    this.komas.delete(koma);
+    this.komaMap[koma.position.r][koma.position.c] = undefined;
+  }
+
   iterKomas(): Iterable<Koma> {
     return this.komas.values();
   }

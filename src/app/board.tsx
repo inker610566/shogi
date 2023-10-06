@@ -34,11 +34,6 @@ export default function Board() {
       setSelectedKomaPos(undefined);
       return;
     }
-    const koma = boardRule.current.board.getKoma(pos);
-    if (koma) {
-      return;
-    }
-    // TODO: Check player.
     try {
       boardRule.current.move(selectedKomaPos, pos);
     } catch (e) {

@@ -124,7 +124,14 @@ export class BoardRule {
 
     const dstKoma = this.board.getKoma(dstPos);
     if (dstKoma) {
-      throw new Error("Not implement koma remove");
+      if (dstKoma.player === srcKoma.player) {
+        throw new InvalidMoveError(
+          srcPos,
+          dstPos,
+          "Cannot move to same player koma",
+        );
+      }
+      this.board.removeKoma(dstKoma);
     }
 
     this.board.updatePosition(srcKoma, dstPos);
