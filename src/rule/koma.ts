@@ -10,12 +10,19 @@ export interface KomaRule {
   getMovablePoints(koma: Koma, board: Board): Array<[number, number]>;
 }
 
-function* genRayPoints(start: Point, diff: Point): Iterable<Point> {
-  let cur = start;
+function* genRayPoints(board: Board, koma: Koma, diff: Point): Iterable<Point> {
+  let cur = koma.position;
   while (true) {
     cur = { r: cur.r + diff.r, c: cur.c + diff.c };
     if (!inBoard(cur)) {
       break;
+    }
+    const dstKoma = board.getKoma(cur);
+    if (dstKoma) {
+      if (dstKoma.player !== koma.player) {
+        yield cur;
+      }
+      return;
     }
     yield cur;
   }
@@ -58,10 +65,10 @@ export const ROOK_KOMA_RULE: KomaRule = {
     }
 
     return [
-      ...genRayPoints(position, { r: -1, c: 0 }),
-      ...genRayPoints(position, { r: 1, c: 0 }),
-      ...genRayPoints(position, { r: 0, c: -1 }),
-      ...genRayPoints(position, { r: 0, c: 1 }),
+      ...genRayPoints(board, koma, { r: -1, c: 0 }),
+      ...genRayPoints(board, koma, { r: 1, c: 0 }),
+      ...genRayPoints(board, koma, { r: 0, c: -1 }),
+      ...genRayPoints(board, koma, { r: 0, c: 1 }),
       ...levelupPoints,
     ];
   },
@@ -92,10 +99,10 @@ export const BISHOP_KOMA_RULE: KomaRule = {
     }
 
     return [
-      ...genRayPoints(position, { r: -1, c: -1 }),
-      ...genRayPoints(position, { r: -1, c: 1 }),
-      ...genRayPoints(position, { r: 1, c: -1 }),
-      ...genRayPoints(position, { r: 1, c: 1 }),
+      ...genRayPoints(board, koma, { r: -1, c: -1 }),
+      ...genRayPoints(board, koma, { r: -1, c: 1 }),
+      ...genRayPoints(board, koma, { r: 1, c: -1 }),
+      ...genRayPoints(board, koma, { r: 1, c: 1 }),
       ...levelupPoints,
     ];
   },
@@ -162,7 +169,7 @@ export const LANCE_KOMA_RULE: KomaRule = {
 
   getMovablePoints: (koma, board) => {
     if (!koma.isLevelUp) {
-      return genRayPoints(koma.position, { r: -1, c: 0 });
+      return genRayPoints(board, koma, { r: -1, c: 0 });
     }
     return [
       ...diff_move_map.getMovablePoints(GOLD_GENERAL_DIFF_MOVE, board, koma),
