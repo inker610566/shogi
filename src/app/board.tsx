@@ -2,10 +2,10 @@
 
 import "./board.css";
 import KomaUi from "./koma.tsx";
-import { Koma, getKomaRule } from "src/rule/koma.ts";
+import { getKomaRule } from "src/rule/koma.ts";
 import { Point } from "src/common/type.ts";
 import { BoardRule, InvalidMoveError } from "src/rule/board.ts";
-import { comparePoint } from "src/common/util.ts";
+import { comparePoint, flatIterable } from "src/common/util.ts";
 import { ROW_NUM, COL_NUM } from "src/common/constant.ts";
 import { useState, useRef } from "react";
 import { useImmer } from "use-immer";
@@ -23,7 +23,7 @@ export default function Board() {
 
   function onClickCell(pos: Point) {
     if (selectedKomaPos === undefined) {
-      const koma = boardRule.current.board.getKoma(pos);
+      const koma = boardRule.current!.board.getKoma(pos);
       if (koma) {
         // TODO: Check player.
         setSelectedKomaPos(pos);
@@ -35,7 +35,7 @@ export default function Board() {
       return;
     }
     try {
-      boardRule.current.move(selectedKomaPos, pos);
+      boardRule.current!.move(selectedKomaPos, pos);
     } catch (e) {
       if (!(e instanceof InvalidMoveError)) {
         throw e;
@@ -47,11 +47,11 @@ export default function Board() {
   }
 
   const nextMap = selectedKomaPos
-    ? boardRule.current.getNextMap({ position: selectedKomaPos })
+    ? boardRule.current!.getNextMap({ position: selectedKomaPos })
     : undefined;
   if (selectedKomaPos) {
     // For click self cancel move.
-    nextMap[selectedKomaPos.r][selectedKomaPos.c] = true;
+    nextMap![selectedKomaPos.r][selectedKomaPos.c] = true;
   }
 
   return (
@@ -74,7 +74,7 @@ export default function Board() {
           ))}
         </div>
       ))}
-      {[...boardRule.current.board.iterKomas()].map((k, idx) => (
+      {flatIterable(boardRule.current!.board.iterKomas()).map((k, idx) => (
         <KomaUi
           koma={k}
           key={`${k.position.r}_${k.position.c}`}

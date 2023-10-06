@@ -1,13 +1,13 @@
 import { Board, Koma } from "./type.ts";
 import { Point } from "src/common/type.ts";
 import { Token as T, diffMoveFromMap } from "./diff_move_map.ts";
-import { inBoard } from "/src/common/util.ts";
+import { inBoard, flatIterable } from "src/common/util.ts";
 import { KomaType as Type } from "./type.ts";
 import * as diff_move_map from "./diff_move_map.ts";
 
 export interface KomaRule {
   getLabel(koma: Koma): string;
-  getMovablePoints(koma: Koma, board: Board): Array<[number, number]>;
+  getMovablePoints(koma: Koma, board: Board): Array<Point>;
 }
 
 function* genRayPoints(board: Board, koma: Koma, diff: Point): Iterable<Point> {
@@ -57,7 +57,7 @@ export const ROOK_KOMA_RULE: KomaRule = {
 
   getMovablePoints: (koma, board) => {
     const { isLevelUp, position } = koma;
-    let levelupPoints = [];
+    let levelupPoints = [] as Point[];
     if (isLevelUp) {
       levelupPoints = [
         ...diff_move_map.getMovablePoints(ROOK_LEVELUP_DIFF_MOVE, board, koma),
@@ -87,7 +87,7 @@ export const BISHOP_KOMA_RULE: KomaRule = {
 
   getMovablePoints: (koma, board) => {
     const { isLevelUp, position } = koma;
-    let levelupPoints = [];
+    let levelupPoints = [] as Point[];
     if (isLevelUp) {
       levelupPoints = [
         ...diff_move_map.getMovablePoints(
@@ -169,7 +169,9 @@ export const LANCE_KOMA_RULE: KomaRule = {
 
   getMovablePoints: (koma, board) => {
     if (!koma.isLevelUp) {
-      return genRayPoints(board, koma, { r: koma.player === 1 ? 1 : -1, c: 0 });
+      return flatIterable(
+        genRayPoints(board, koma, { r: koma.player === 1 ? 1 : -1, c: 0 }),
+      );
     }
     return [
       ...diff_move_map.getMovablePoints(GOLD_GENERAL_DIFF_MOVE, board, koma),

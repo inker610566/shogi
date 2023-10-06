@@ -26,7 +26,7 @@ const INITIAL_ROW1 = [
 ];
 
 function* initialKomas(
-  isFirst: bool,
+  isFirst: boolean,
 ): Iterable<{ type: KomaType; player: number; position: Point }> {
   const player1 = isFirst ? 0 : 1;
   const player2 = 1 - player1;
@@ -89,9 +89,9 @@ export class BoardRule {
     koma,
     position,
   }: {
-    koma?: koma;
+    koma?: Koma;
     position?: Point;
-  }): Array<bool[]> {
+  }): Array<boolean[]> {
     if (!koma) {
       if (!position) {
         throw new Error("Invalid call");
@@ -104,7 +104,7 @@ export class BoardRule {
     const rule = getKomaRule(koma);
     const nextMap = Array.from({
       length: ROW_NUM,
-    }).map(() => Array.from({ length: COL_NUM }).fill(false));
+    }).map(() => Array.from({ length: COL_NUM }).fill(false)) as boolean[][];
     for (const { r, c } of rule.getMovablePoints(koma, this.board)) {
       nextMap[r][c] = true;
     }

@@ -1,7 +1,15 @@
 import "./koma.css";
-import { Koma as KomaProps, getKomaRule } from "src/rule/koma.ts";
+import { getKomaRule } from "src/rule/koma.ts";
+import { Koma as KomaProps } from "src/rule/type.ts";
+import { CSSProperties } from "react";
 
-export default function Koma({ koma, onClick }: { koma: KomaProps }) {
+export default function Koma({
+  koma,
+  onClick,
+}: {
+  koma: KomaProps;
+  onClick: () => void;
+}) {
   const rule = getKomaRule(koma);
   return (
     <div
@@ -11,10 +19,12 @@ export default function Koma({ koma, onClick }: { koma: KomaProps }) {
         ...[koma.player === 1 ? ["p2"] : []],
       ].join(" ")}
       onClick={onClick}
-      style={{
-        "--r": koma.position.r,
-        "--c": koma.position.c,
-      }}
+      style={
+        {
+          "--r": koma.position.r,
+          "--c": koma.position.c,
+        } as CSSProperties
+      }
     >
       {rule.getLabel(koma)}
     </div>

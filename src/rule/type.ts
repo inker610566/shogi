@@ -16,7 +16,7 @@ export enum KomaType {
 export interface Koma {
   readonly type: KomaType;
   readonly player: number;
-  isLevelUp: bool;
+  isLevelUp: boolean;
   position: Point;
 }
 
@@ -24,9 +24,11 @@ export class Board {
   private readonly komas = new Set<Koma>();
   private komaMap: Array<Array<Koma | undefined>> = Array.from({
     length: ROW_NUM,
-  }).map(() => Array.from({ length: COL_NUM }).fill(undefined));
+  }).map(() => Array.from({ length: COL_NUM }).fill(undefined)) as Array<
+    Array<Koma | undefined>
+  >;
 
-  private addKoma(type: KomaType, player: number, { r, c }: Point) {
+  addKoma(type: KomaType, player: number, { r, c }: Point) {
     const koma = { type, player, isLevelUp: false, position: { r, c } };
     if (this.komaMap[r][c]) {
       throw new Error(`Cannot add koma to existing position (${r}, ${c})`);
@@ -39,7 +41,7 @@ export class Board {
     return this.komaMap[r][c];
   }
 
-  updatePosition(koma: Koma, pos: Position) {
+  updatePosition(koma: Koma, pos: Point) {
     assert(this.komas.has(koma), "Call updatePosition() with owned koma");
     this.komaMap[koma.position.r][koma.position.c] = undefined;
     this.komaMap[pos.r][pos.c] = koma;

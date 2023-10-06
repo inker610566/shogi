@@ -1,18 +1,20 @@
 import { Point } from "src/common/type.ts";
+import { Board, Koma } from "./type.ts";
 import { castExists } from "src/common/util.ts";
 import { ROW_NUM, COL_NUM } from "src/common/constant.ts";
 
 export enum Token {
-  EMPTY = "E",
+  /** Empty. */
+  E = "E",
   /** Destination. */
   D = "D",
   /** Source. */
   S = "S",
 }
 
-export type DiffMoveMap = Array<DiffMoveMapType[]>;
+export type DiffMoveMap = Array<Token[]>;
 
-function findToken(mp: diffMoveFromMap, token: Token): Point | undefined {
+function findToken(mp: DiffMoveMap, token: Token): Point | undefined {
   for (let r = 0; r < mp.length; r++) {
     for (let c = 0; c < mp[r].length; c++) {
       if (mp[r][c] === token) return { r, c };
@@ -21,7 +23,7 @@ function findToken(mp: diffMoveFromMap, token: Token): Point | undefined {
   return undefined;
 }
 
-export type DiffMoveList = Array<Point[]>;
+export type DiffMoveList = Point[];
 
 export function diffMoveFromMap(mp: DiffMoveMap): DiffMoveList {
   const source = castExists(findToken(mp, Token.S));
@@ -44,7 +46,7 @@ export function* getMovablePoints(
   list: DiffMoveList,
   board: Board,
   koma: Koma,
-): Iterable<Point[]> {
+): Iterable<Point> {
   const { player } = koma;
   const srcPos = koma.position;
   if (player === 1) {
