@@ -38,15 +38,22 @@ export function diffMoveFromMap(mp: DiffMoveMap): DiffMoveList {
 
 export function* getMovablePoints(
   list: DiffMoveList,
-  point: Point,
+  board: Board,
+  koma: Koma,
 ): Iterable<Point[]> {
+    const p1 = koma.player;
+    const srcPos = koma.position;
     for (const p of list) {
         const dest = {
-            r: point.r + p.r,
-            c: point.c + p.c,
+            r: srcPos.r + p.r,
+            c: srcPos.c + p.c,
         };
-        if (0 <= dest.r && dest.r < ROW_NUM &&
-            0 <= dest.c && dest.c < COL_NUM)
-            yield dest;
+        if (!(0 <= dest.r && dest.r < ROW_NUM &&
+            0 <= dest.c && dest.c < COL_NUM))
+            continue;
+        const dstKoma = board.getKoma(dest);
+        if (dstKoma?.player === p1)
+            continue;
+        yield dest;
     }
 }

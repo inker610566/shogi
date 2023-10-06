@@ -105,7 +105,7 @@ export class BoardRule {
     const nextMap = Array.from({
       length: ROW_NUM,
     }).map(() => Array.from({ length: COL_NUM }).fill(false));
-    for (const { r, c } of rule.getMovablePoints(koma)) {
+    for (const { r, c } of rule.getMovablePoints(koma, this.board)) {
       nextMap[r][c] = true;
     }
     return nextMap;
