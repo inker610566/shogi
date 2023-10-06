@@ -169,7 +169,7 @@ export const LANCE_KOMA_RULE: KomaRule = {
 
   getMovablePoints: (koma, board) => {
     if (!koma.isLevelUp) {
-      return genRayPoints(board, koma, { r: -1, c: 0 });
+      return genRayPoints(board, koma, { r: koma.player === 1 ? 1 : -1, c: 0 });
     }
     return [
       ...diff_move_map.getMovablePoints(GOLD_GENERAL_DIFF_MOVE, board, koma),
