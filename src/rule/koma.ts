@@ -8,6 +8,7 @@ import * as diff_move_map from "./diff_move_map.ts";
 export interface KomaRule {
   getLabel(koma: Koma): string;
   getMovablePoints(koma: Koma, board: Board): Array<Point>;
+  canPromote: boolean;
 }
 
 function* genRayPoints(board: Board, koma: Koma, diff: Point): Iterable<Point> {
@@ -42,6 +43,8 @@ export const KING_KOMA_RULE: KomaRule = {
   getMovablePoints: (koma, board) => {
     return [...diff_move_map.getMovablePoints(KING_DIFF_MOVE, board, koma)];
   },
+
+  canPromote: false,
 };
 
 const ROOK_LEVELUP_DIFF_MOVE = diffMoveFromMap([
@@ -52,14 +55,14 @@ const ROOK_LEVELUP_DIFF_MOVE = diffMoveFromMap([
 
 export const ROOK_KOMA_RULE: KomaRule = {
   getLabel: (koma) => {
-    return koma.isLevelUp ? "龍王" : "飛車";
+    return koma.isPromoted ? "龍王" : "飛車";
   },
 
   getMovablePoints: (koma, board) => {
-    const { isLevelUp, position } = koma;
-    let levelupPoints = [] as Point[];
-    if (isLevelUp) {
-      levelupPoints = [
+    const { isPromoted, position } = koma;
+    let promotedPoints = [] as Point[];
+    if (isPromoted) {
+      promotedPoints = [
         ...diff_move_map.getMovablePoints(ROOK_LEVELUP_DIFF_MOVE, board, koma),
       ];
     }
@@ -69,9 +72,11 @@ export const ROOK_KOMA_RULE: KomaRule = {
       ...genRayPoints(board, koma, { r: 1, c: 0 }),
       ...genRayPoints(board, koma, { r: 0, c: -1 }),
       ...genRayPoints(board, koma, { r: 0, c: 1 }),
-      ...levelupPoints,
+      ...promotedPoints,
     ];
   },
+
+  canPromote: true,
 };
 
 const BISHOP_LEVELUP_DIFF_MOVE = diffMoveFromMap([
@@ -82,14 +87,14 @@ const BISHOP_LEVELUP_DIFF_MOVE = diffMoveFromMap([
 
 export const BISHOP_KOMA_RULE: KomaRule = {
   getLabel: (koma) => {
-    return koma.isLevelUp ? "龍馬" : "角行";
+    return koma.isPromoted ? "龍馬" : "角行";
   },
 
   getMovablePoints: (koma, board) => {
-    const { isLevelUp, position } = koma;
-    let levelupPoints = [] as Point[];
-    if (isLevelUp) {
-      levelupPoints = [
+    const { isPromoted, position } = koma;
+    let promotedPoints = [] as Point[];
+    if (isPromoted) {
+      promotedPoints = [
         ...diff_move_map.getMovablePoints(
           BISHOP_LEVELUP_DIFF_MOVE,
           board,
@@ -103,9 +108,11 @@ export const BISHOP_KOMA_RULE: KomaRule = {
       ...genRayPoints(board, koma, { r: -1, c: 1 }),
       ...genRayPoints(board, koma, { r: 1, c: -1 }),
       ...genRayPoints(board, koma, { r: 1, c: 1 }),
-      ...levelupPoints,
+      ...promotedPoints,
     ];
   },
+
+  canPromote: true,
 };
 
 const GOLD_GENERAL_DIFF_MOVE = diffMoveFromMap([
@@ -124,6 +131,8 @@ export const GOLD_GENERAL_KOMA_RULE: KomaRule = {
       ...diff_move_map.getMovablePoints(GOLD_GENERAL_DIFF_MOVE, board, koma),
     ];
   },
+
+  canPromote: false,
 };
 
 const SLIVER_GENERAL_DIFF_MOVE = diffMoveFromMap([
@@ -134,15 +143,17 @@ const SLIVER_GENERAL_DIFF_MOVE = diffMoveFromMap([
 
 export const SLIVER_GENERAL_KOMA_RULE: KomaRule = {
   getLabel: (koma) => {
-    return koma.isLevelUp ? "銀将" : "成銀";
+    return koma.isPromoted ? "銀将" : "成銀";
   },
 
   getMovablePoints: (koma, board) => {
-    const diffMap = koma.isLevelUp
+    const diffMap = koma.isPromoted
       ? GOLD_GENERAL_DIFF_MOVE
       : SLIVER_GENERAL_DIFF_MOVE;
     return [...diff_move_map.getMovablePoints(diffMap, board, koma)];
   },
+
+  canPromote: true,
 };
 
 const KNIGHT_DIFF_MOVE = diffMoveFromMap([
@@ -153,22 +164,24 @@ const KNIGHT_DIFF_MOVE = diffMoveFromMap([
 
 export const KNIGHT_KOMA_RULE: KomaRule = {
   getLabel: (koma) => {
-    return koma.isLevelUp ? "成桂" : "桂馬";
+    return koma.isPromoted ? "成桂" : "桂馬";
   },
 
   getMovablePoints: (koma, board) => {
-    const diffMap = koma.isLevelUp ? GOLD_GENERAL_DIFF_MOVE : KNIGHT_DIFF_MOVE;
+    const diffMap = koma.isPromoted ? GOLD_GENERAL_DIFF_MOVE : KNIGHT_DIFF_MOVE;
     return [...diff_move_map.getMovablePoints(diffMap, board, koma)];
   },
+
+  canPromote: true,
 };
 
 export const LANCE_KOMA_RULE: KomaRule = {
   getLabel: (koma) => {
-    return koma.isLevelUp ? "成香" : "香車";
+    return koma.isPromoted ? "成香" : "香車";
   },
 
   getMovablePoints: (koma, board) => {
-    if (!koma.isLevelUp) {
+    if (!koma.isPromoted) {
       return flatIterable(
         genRayPoints(board, koma, { r: koma.player === 1 ? 1 : -1, c: 0 }),
       );
@@ -177,16 +190,18 @@ export const LANCE_KOMA_RULE: KomaRule = {
       ...diff_move_map.getMovablePoints(GOLD_GENERAL_DIFF_MOVE, board, koma),
     ];
   },
+
+  canPromote: true,
 };
 
 export const PAWN_KOMA_RULE: KomaRule = {
   getLabel: (koma) => {
-    return koma.isLevelUp ? "と金" : "歩兵";
+    return koma.isPromoted ? "と金" : "歩兵";
   },
 
   getMovablePoints: (koma, board) => {
-    const { isLevelUp, position } = koma;
-    if (!isLevelUp) {
+    const { isPromoted, position } = koma;
+    if (!isPromoted) {
       const rDiff = koma.player === 1 ? 1 : -1;
       const nextPos = { r: position.r + rDiff, c: position.c };
       return inBoard(nextPos) ? [nextPos] : [];
@@ -195,6 +210,8 @@ export const PAWN_KOMA_RULE: KomaRule = {
       ...diff_move_map.getMovablePoints(GOLD_GENERAL_DIFF_MOVE, board, koma),
     ];
   },
+
+  canPromote: true,
 };
 
 const KOMA_RULE_BY_TYPE = new Map<Type, KomaRule>([
@@ -215,3 +232,4 @@ export function getKomaRule(koma: Koma): KomaRule {
   }
   return rule;
 }
+

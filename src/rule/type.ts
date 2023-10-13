@@ -16,7 +16,7 @@ export enum KomaType {
 export interface Koma {
   readonly type: KomaType;
   readonly player: number;
-  isLevelUp: boolean;
+  isPromoted: boolean;
   position: Point;
 }
 
@@ -29,7 +29,7 @@ export class Board {
   >;
 
   addKoma(type: KomaType, player: number, { r, c }: Point) {
-    const koma = { type, player, isLevelUp: false, position: { r, c } };
+    const koma = { type, player, isPromoted: false, position: { r, c } };
     if (this.komaMap[r][c]) {
       throw new Error(`Cannot add koma to existing position (${r}, ${c})`);
     }
