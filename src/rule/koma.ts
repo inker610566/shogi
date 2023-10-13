@@ -233,3 +233,20 @@ export function getKomaRule(koma: Koma): KomaRule {
   return rule;
 }
 
+export function isCanPromoteMove(
+  srcPos: Point,
+  dstPos: Point,
+  koma: Koma,
+): boolean {
+  if (koma.isPromoted) {
+    return false;
+  }
+  const rule = getKomaRule(koma);
+  if (!rule.canPromote) {
+    return false;
+  }
+  const [r1, r2] = koma.player === 0 ? [0, 2] : [6, 8];
+  return (
+    (r1 <= srcPos.r && srcPos.r <= r2) || (r1 <= dstPos.r && dstPos.r <= r2)
+  );
+}
