@@ -75,8 +75,8 @@ export class BoardRule {
   private readonly changeListeners = new Set<() => void>();
   readonly board = new Board();
 
-  constructor() {
-    for (const { type, player, position } of initialKomas(true)) {
+  constructor(readonly isFirst: boolean) {
+    for (const { type, player, position } of initialKomas(isFirst)) {
       this.board.addKoma(type, player, position);
     }
   }

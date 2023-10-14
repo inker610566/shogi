@@ -2,11 +2,17 @@
 
 import "./board.css";
 import KomaUi from "./koma.tsx";
-import { getKomaRule } from "src/rule/koma.ts";
+import KomaPromoteDialog from "./koma_promote_dialog.tsx";
+import { getKomaRule, isCanPromoteMove } from "src/rule/koma.ts";
 import { Point } from "src/common/type.ts";
 import { Koma } from "src/rule/type.ts";
 import { BoardRule, InvalidMoveError } from "src/rule/board.ts";
-import { comparePoint, flatIterable, assert } from "src/common/util.ts";
+import {
+  comparePoint,
+  flatIterable,
+  assert,
+  castExists,
+} from "src/common/util.ts";
 import { ROW_NUM, COL_NUM } from "src/common/constant.ts";
 import { useState, useRef } from "react";
 import { useImmer } from "use-immer";
@@ -19,7 +25,9 @@ enum TurnStateType {
 /** The game state within a turn. */
 interface TurnState {
   boardHighlight?: boolean[][];
+  promoteKoma?: Koma;
   handleClickCell(pos: Point): TurnChange | undefined;
+  handlePromote?: (shouldPromote: boolean) => TurnChange | undefined;
 }
 
 interface TurnChange {
@@ -57,38 +65,73 @@ class SelectedKomaState implements TurnState {
     if (!comparePoint(this.selectedKoma.position, pos)) {
       return { nextState: new OverviewState(this.boardRule) };
     }
+    const sourcePos = this.selectedKoma.position;
     try {
-      this.boardRule.move(this.selectedKoma.position, pos);
+      this.boardRule.move(sourcePos, pos);
     } catch (e) {
       if (!(e instanceof InvalidMoveError)) {
         throw e;
       }
       return undefined;
     }
+    if (isCanPromoteMove(sourcePos, pos, this.selectedKoma)) {
+      return {
+        nextState: new PromoteKomaState(this.boardRule, this.selectedKoma),
+      };
+    }
     return { nextState: new OverviewState(this.boardRule), nextTurn: true };
   }
+}
+
+class PromoteKomaState implements TurnState {
+  constructor(
+    private readonly boardRule: BoardRule,
+    readonly promoteKoma: Koma,
+  ) {}
+
+  handleClickCell(pos: Point): TurnChange | undefined {
+    return undefined;
+  }
+
+  readonly handlePromote = (shouldPromote: boolean) => {
+    if (shouldPromote) {
+      this.promoteKoma.isPromoted = true;
+    }
+    return { nextState: new OverviewState(this.boardRule), nextTurn: true };
+  };
 }
 
 export default function Board() {
   const [turn, setTurn] = useState<number>(0);
   const boardRule = useRef<BoardRule | undefined>(undefined);
   if (!boardRule.current) {
-    boardRule.current = new BoardRule();
+    boardRule.current = new BoardRule(true);
     boardRule.current.addChangeListener(() => void setTurn(turn + 1));
   }
   const [turnState, setTurnState] = useState<TurnState>(
     new OverviewState(boardRule.current),
   );
 
-  function onClickCell(pos: Point) {
-    const change = turnState.handleClickCell(pos);
-    if (!change) return;
-    const { nextState, nextTurn } = change;
+  function applyTurnChange({ nextState, nextTurn }: TurnChange) {
     if (nextState) {
       setTurnState(nextState);
     }
     if (nextTurn) {
       setTurn(turn + 1);
+    }
+  }
+
+  function onClickCell(pos: Point) {
+    const change = turnState.handleClickCell(pos);
+    if (change) {
+      applyTurnChange(change);
+    }
+  }
+
+  function onPromoteDialogResult(shouldPromote: boolean) {
+    const change = castExists(turnState.handlePromote)(shouldPromote);
+    if (change) {
+      applyTurnChange(change);
     }
   }
 
@@ -122,6 +165,13 @@ export default function Board() {
           onClick={() => void onClickCell(k.position)}
         />
       ))}
+      {turnState.promoteKoma && (
+        <KomaPromoteDialog
+          koma={turnState.promoteKoma}
+          onConfirm={() => void onPromoteDialogResult(true)}
+          onDeny={() => void onPromoteDialogResult(false)}
+        />
+      )}
     </div>
   );
 }
