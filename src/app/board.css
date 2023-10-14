@@ -18,10 +18,10 @@
   border: 1px solid black;
 }
 
-.board.select-koma .cell:not(.next) {
+.board.apply-highlight .cell:not(.highlight) {
   filter: brightness(0.7);
 }
 
-.board.select-koma .cell.next {
+.board.apply-highlight .cell.highlight {
   cursor: pointer;
 }
